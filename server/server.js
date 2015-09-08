@@ -7,15 +7,26 @@ Meteor.startup(function() {
         access_token_secret:    ACCESS_TOKEN_SECRET
     });
 
+    var callback = function(error, tweet, response) {
+        if (!error) {
+            console.log(tweet);
+            return;
+        }
+        console.log(error);
+    };
+
     Meteor.methods({
-        'tweet': function(text) {
+        'twTweet': function(text) {
             var options = {
                 status: text
             };
-            var callback = function(error, tweet, response) {
-                console.log(error);
-            };
             client.post('statuses/update', options, callback);
+        },
+        'twGetUserTimeline': function(screenName) {
+            var params = {
+                screen_name: screenName
+            };
+            return client.get('statuses/user_timeline', params, callback);
         }
     });
 });
